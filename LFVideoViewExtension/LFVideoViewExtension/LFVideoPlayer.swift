@@ -18,9 +18,9 @@ protocol LFVideoPlayerable: UIView {
 }
 
 protocol LFVideoPlayerControllerDelegate: UIViewController {
-    func moviePlayTimeDidChanged(view: LFVideoPlayerable, time: CMTime)
-    func moviePlayerViewReadyToPlay(view: LFVideoPlayerable)
-    func moviePlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSErrorPointer)
+    func videoPlayTimeDidChanged(view: LFVideoPlayerable, time: CMTime)
+    func videoPlayerViewReadyToPlay(view: LFVideoPlayerable)
+    func videoPlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSErrorPointer)
 }
 
 // 需要实现的播放器方法: 1.播放当前URL 2.暂停 3.停止 4.全屏 5.音量 6.静音 7.设置进度
@@ -30,6 +30,22 @@ extension LFVideoPlayerable {
         return URL(string: videoURLString ?? "")
     }
     
+    var isPlaying: Bool {
+        return self.avPlayer.currentItem != nil && self.avPlayer.rate != 0
+    }
+    
+    var volume: Float {
+        get {
+            return self.avPlayer.volume
+        }
+        
+        set {
+            if (newValue >= 0 && newValue <= 1 && __inline_isnanf(newValue) == 0) {
+                self.avPlayer.volume = newValue
+            }
+        }
+    }
+    
     private var avPlayer: AVPlayer {
         let player = AVPlayer()
         player.addPeriodicTimeObserver(forInterval: CMTime(seconds: 1.0 / 60.0, preferredTimescale: CMTimeScale(NSEC_PER_SEC)), queue: nil) { [weak self] (time) in
@@ -37,7 +53,7 @@ extension LFVideoPlayerable {
             guard let strongSelf = self else {
                 return
             }
-            strongSelf.delegate?.moviePlayTimeDidChanged(view: strongSelf, time: strongSelf.avPlayer.currentTime() )
+            strongSelf.delegate?.videoPlayTimeDidChanged(view: strongSelf, time: strongSelf.avPlayer.currentTime() )
         }
         let layer = AVPlayerLayer(layer: self.layer)
         layer.backgroundColor = self.backgroundColor?.cgColor
@@ -46,38 +62,8 @@ extension LFVideoPlayerable {
         return player
     }
     
-    /*
-     
-     AVURLAsset *asset = [AVURLAsset URLAssetWithURL:URL options:nil];
-     NSArray *keys = @[@"playable", @"duration"];
-     [asset loadValuesAsynchronouslyForKeys:keys completionHandler:^{
-     IBLRunOnMainThread(^{
-     for (NSString *key in keys) {
-     NSError *error = nil;
-     AVKeyValueStatus keyStatus = [asset statusOfValueForKey:key error:&error];
-     
-     if (keyStatus == AVKeyValueStatusFailed) {
-     if (self.delegate && [self.delegate respondsToSelector:@selector(moviePlayerViewFailedToPlay:error:)]) {
-     [self.delegate moviePlayerViewFailedToPlay:self error:error];
-     }
-     return;
-     }
-     }
-     
-     AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
-     [self->_player replaceCurrentItemWithPlayerItem:playerItem];
-     
-     if ([self.delegate respondsToSelector:@selector(moviePlayerViewReadyToPlay:)]) {
-     [self.delegate moviePlayerViewReadyToPlay:self];
-     }
-     
-     });
-     }];
-     
-     */
-    
-    // 播放
-    func play() -> Void {
+    // 装载视频
+    func loadCurrentVideo() -> Void {
         guard let url: URL = self.videoURL else {
             print("NO avilable URL.");
             return
@@ -90,18 +76,43 @@ extension LFVideoPlayerable {
             for key in keys {
                 let assetStatus = videoAssets.statusOfValue(forKey: key, error: error)
                 guard assetStatus != AVKeyValueStatus.failed else {
-                    self.delegate?.moviePlayerViewFailedToPlay(view: self, error: error)
+                    self.delegate?.videoPlayerViewFailedToPlay(view: self, error: error)
                     return
                 }
                 let playerItem = AVPlayerItem(asset: videoAssets)
                 self.avPlayer.replaceCurrentItem(with: playerItem)
                 
-                self.delegate?.moviePlayerViewReadyToPlay(view: self)
+                self.delegate?.videoPlayerViewReadyToPlay(view: self)
             }
         }
         
         self.backgroundColor = .black
         
+    }
+    
+    // 播放视频
+    func lf_play() {
+        self.avPlayer.play()
+    }
+    
+    // 停止播放视频，进度条归零
+    func lf_stop() {
+        self.avPlayer.seek(to: CMTime(value: 0, timescale: CMTimeScale.zero))
+        self.avPlayer.pause()
+    }
+    
+    // 暂停
+    func lf_pause() {
+        self.avPlayer.pause()
+    }
+    
+    // 调到指定时间
+    func lf_seekToTime(time: CMTimeValue) {
+        guard let timeScale = self.avPlayer.currentItem?.asset.duration.timescale else {
+            return
+        }
+        let cmTime: CMTime = CMTime(value: time, timescale: timeScale)
+        self.avPlayer.seek(to: cmTime)
     }
     
     
