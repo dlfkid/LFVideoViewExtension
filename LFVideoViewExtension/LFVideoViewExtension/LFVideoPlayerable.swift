@@ -22,7 +22,7 @@ protocol LFVideoPlayerable: UIView {
 protocol LFVideoPlayerControllerDelegate: UIViewController {
     func videoPlayTimeDidChanged(view: LFVideoPlayerable, time: CMTime)
     func videoPlayerViewReadyToPlay(view: LFVideoPlayerable)
-    func videoPlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSErrorPointer)
+    func videoPlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSError?)
 }
 
 // 需要实现的播放器方法: 1.播放当前URL 2.暂停 3.停止 4.全屏 5.音量 6.静音 7.设置进度
@@ -81,9 +81,9 @@ extension LFVideoPlayerable {
         videoAssets.loadValuesAsynchronously(forKeys: keys) {
             let mainQueue = DispatchQueue.main
             mainQueue.sync {
-                let error: NSErrorPointer = nil
+                var error: NSError?
                 for key in keys {
-                    let assetStatus = videoAssets.statusOfValue(forKey: key, error: error)
+                    let assetStatus = videoAssets.statusOfValue(forKey: key, error: &error)
                     guard assetStatus != AVKeyValueStatus.failed else {
                         self.delegate?.videoPlayerViewFailedToPlay(view: self, error: error)
                         return
@@ -92,7 +92,7 @@ extension LFVideoPlayerable {
                 let playerItem = AVPlayerItem(asset: videoAssets)
                 player.replaceCurrentItem(with: playerItem)
                 let layer = AVPlayerLayer(player: player)
-                layer.frame = self.frame;
+                layer.frame = self.frame
                 layer.backgroundColor = UIColor.blue.cgColor
                 self.layer.addSublayer(layer)
                 self.delegate?.videoPlayerViewReadyToPlay(view: self)
@@ -159,7 +159,7 @@ extension LFVideoPlayerControllerDelegate {
         print("Video is ready to play")
     }
     
-    func videoPlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSErrorPointer) {
-        print("Video load is a failure with error \(error.debugDescription)")
+    func videoPlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSError?) {
+        print("Video load is a failure with error \(error?.localizedDescription ?? "Unknown Error")")
     }
 }
