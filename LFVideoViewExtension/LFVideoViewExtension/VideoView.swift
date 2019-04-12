@@ -20,4 +20,30 @@ class VideoView: UIView, LFVideoPlayerable {
     override class var layerClass : AnyClass {
         return AVPlayerLayer.self
     }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        NotificationCenter.default.addObserver(self, selector: #selector(videoDidFinishedPlayToEnd), name: Notification.Name.AVPlayerItemDidPlayToEndTime, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(videoDidFailedPlayToEnd(notify:)), name: Notification.Name.AVPlayerItemFailedToPlayToEndTime, object: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension VideoView {
+    @objc func videoDidFinishedPlayToEnd() {
+        self.lf_stop()
+        print("Video play finished");
+        self.delegate?.videoPlayerViewDidPlayToEndTime(view: self)
+    }
+    
+    @objc func videoDidFailedPlayToEnd(notify: Notification) {
+        guard let notifyError: NSError = notify.object as? NSError else {
+            return
+        }
+        print("Video failed to play with error: \(notifyError.localizedDescription)")
+        self.delegate?.videoPlayerViewFailedToPlay(view: self, error: notifyError)
+    }
 }

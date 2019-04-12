@@ -17,12 +17,15 @@ protocol LFVideoPlayerable: UIView {
     var delegate: LFVideoPlayerControllerDelegate? { get set }
     
     var avPlayer: AVPlayer? { get set }
+    
+    
 }
 
 protocol LFVideoPlayerControllerDelegate: UIViewController {
     func videoPlayTimeDidChanged(view: LFVideoPlayerable, time: CMTime)
     func videoPlayerViewReadyToPlay(view: LFVideoPlayerable)
     func videoPlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSError?)
+    func videoPlayerViewDidPlayToEndTime(view: LFVideoPlayerable)
 }
 
 // 需要实现的播放器方法: 1.播放当前URL 2.暂停 3.停止 4.全屏 5.音量 6.静音 7.设置进度
@@ -100,13 +103,6 @@ extension LFVideoPlayerable {
         }
     }
     
-    /*AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
-     [self->_player replaceCurrentItemWithPlayerItem:playerItem];
-     
-     if ([self.delegate respondsToSelector:@selector(moviePlayerViewReadyToPlay:)]) {
-     [self.delegate moviePlayerViewReadyToPlay:self];
-     }*/
-    
     // 播放视频
     func lf_play() {
         guard let player = self.avPlayer else {
@@ -161,5 +157,9 @@ extension LFVideoPlayerControllerDelegate {
     
     func videoPlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSError?) {
         print("Video load is a failure with error \(error?.localizedDescription ?? "Unknown Error")")
+    }
+    
+    func videoPlayerViewDidPlayToEndTime(view: LFVideoPlayerable) {
+        print("Video play to end time")
     }
 }
