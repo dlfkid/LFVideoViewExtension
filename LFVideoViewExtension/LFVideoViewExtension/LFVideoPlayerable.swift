@@ -10,6 +10,33 @@ import Foundation
 import UIKit
 import AVFoundation
 
+// Mark: - 控制器回调
+
+protocol LFVideoPlayerControllerDelegate {
+    func videoPlayTimeDidChanged(view: LFVideoPlayerable, time: CMTime)
+    func videoPlayerViewReadyToPlay(view: LFVideoPlayerable)
+    func videoPlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSError?)
+    func videoPlayerViewDidPlayToEndTime(view: LFVideoPlayerable)
+}
+
+extension LFVideoPlayerControllerDelegate {
+    func videoPlayTimeDidChanged(view: LFVideoPlayerable, time: CMTime) {
+        print("Video time: \(time)")
+    }
+    
+    func videoPlayerViewReadyToPlay(view: LFVideoPlayerable) {
+        print("Video is ready to play")
+    }
+    
+    func videoPlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSError?) {
+        print("Video load is a failure with error \(error?.localizedDescription ?? "Unknown Error")")
+    }
+    
+    func videoPlayerViewDidPlayToEndTime(view: LFVideoPlayerable) {
+        print("Video play to end time")
+    }
+}
+
 protocol LFVideoPlayerable: UIView {
     
     var videoURLString: String? { get set }
@@ -19,13 +46,6 @@ protocol LFVideoPlayerable: UIView {
     var avPlayer: AVPlayer? { get set }
     
     
-}
-
-protocol LFVideoPlayerControllerDelegate: UIViewController {
-    func videoPlayTimeDidChanged(view: LFVideoPlayerable, time: CMTime)
-    func videoPlayerViewReadyToPlay(view: LFVideoPlayerable)
-    func videoPlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSError?)
-    func videoPlayerViewDidPlayToEndTime(view: LFVideoPlayerable)
 }
 
 // 需要实现的播放器方法: 1.播放当前URL 2.暂停 3.停止 4.全屏 5.音量 6.静音 7.设置进度
@@ -116,7 +136,7 @@ extension LFVideoPlayerable {
         guard let player = self.avPlayer else {
             return
         }
-        player.seek(to: CMTime(value: 0, timescale: CMTimeScale.zero))
+        player.seek(to: CMTime(value: 0, timescale: 1))
         player.pause()
     }
     
@@ -128,8 +148,16 @@ extension LFVideoPlayerable {
         player.pause()
     }
     
+    // 声音开关
+    func lf_speaker(state: Bool) {
+        guard let player = self.avPlayer else {
+            return
+        }
+        player.isMuted = !state
+    }
+    
     // 调到指定时间
-    func lf_seekToTime(time: CMTimeValue) {
+    func lf_seekTo(time: CMTimeValue) {
         guard let player = self.avPlayer else {
             return
         }
@@ -140,26 +168,27 @@ extension LFVideoPlayerable {
         player.seek(to: cmTime)
     }
     
+    // 调到指定进度
+    func lf_seekTo(percentage: Float) {
+        guard let player = self.avPlayer else {
+            return
+        }
+        
+        var tempPercent = percentage
+        if percentage < 0 {
+            tempPercent = 0;
+        }
+        if percentage > 1 {
+            tempPercent = 1;
+        }
+        
+        let totalTimeValue: Int64 = player.currentItem?.asset.duration.value ?? 0
+        let targetTimeValue = Float(totalTimeValue) * tempPercent
+        self.lf_seekTo(time: CMTimeValue(targetTimeValue))
+    }
+    
     func updateVideoOrientation(orientation: UIDeviceOrientation) {
         let layer: AVPlayerLayer = AVPlayerLayer(layer: self.layer);
         layer.videoGravity = orientation.isLandscape ? AVLayerVideoGravity.resize : AVLayerVideoGravity.resizeAspect
-    }
-}
-
-extension LFVideoPlayerControllerDelegate {
-    func videoPlayTimeDidChanged(view: LFVideoPlayerable, time: CMTime) {
-        print("Video time: \(time)")
-    }
-    
-    func videoPlayerViewReadyToPlay(view: LFVideoPlayerable) {
-        print("Video is ready to play")
-    }
-    
-    func videoPlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSError?) {
-        print("Video load is a failure with error \(error?.localizedDescription ?? "Unknown Error")")
-    }
-    
-    func videoPlayerViewDidPlayToEndTime(view: LFVideoPlayerable) {
-        print("Video play to end time")
     }
 }
