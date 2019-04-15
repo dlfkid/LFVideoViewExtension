@@ -13,26 +13,26 @@ import AVFoundation
 // Mark: - 控制器回调
 
 protocol LFVideoPlayerControllerDelegate {
-    func videoPlayTimeDidChanged(view: LFVideoPlayerable, time: CMTime)
-    func videoPlayerViewReadyToPlay(view: LFVideoPlayerable)
-    func videoPlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSError?)
-    func videoPlayerViewDidPlayToEndTime(view: LFVideoPlayerable)
+    func lf_videoPlayTimeDidChanged(view: LFVideoPlayerable, time: CMTime)
+    func lf_videoPlayerViewReadyToPlay(view: LFVideoPlayerable)
+    func lf_videoPlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSError?)
+    func lf_videoPlayerViewDidPlayToEndTime(view: LFVideoPlayerable)
 }
 
 extension LFVideoPlayerControllerDelegate {
-    func videoPlayTimeDidChanged(view: LFVideoPlayerable, time: CMTime) {
+    func lf_videoPlayTimeDidChanged(view: LFVideoPlayerable, time: CMTime) {
         print("Video time: \(time)")
     }
     
-    func videoPlayerViewReadyToPlay(view: LFVideoPlayerable) {
+    func lf_videoPlayerViewReadyToPlay(view: LFVideoPlayerable) {
         print("Video is ready to play")
     }
     
-    func videoPlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSError?) {
+    func lf_videoPlayerViewFailedToPlay(view: LFVideoPlayerable, error: NSError?) {
         print("Video load is a failure with error \(error?.localizedDescription ?? "Unknown Error")")
     }
     
-    func videoPlayerViewDidPlayToEndTime(view: LFVideoPlayerable) {
+    func lf_videoPlayerViewDidPlayToEndTime(view: LFVideoPlayerable) {
         print("Video play to end time")
     }
 }
@@ -51,18 +51,22 @@ protocol LFVideoPlayerable: UIView {
 // 需要实现的播放器方法: 1.播放当前URL 2.暂停 3.停止 4.全屏 5.音量 6.静音 7.设置进度
 extension LFVideoPlayerable {
     
-    var videoURL: URL? {
+    var lf_videoDuration: Float {
+        return Float(CMTimeGetSeconds(self.avPlayer?.currentItem?.asset.duration ?? CMTime(value: 0, timescale: 1)))
+    }
+    
+    var lf_videoURL: URL? {
         return URL(string: videoURLString ?? "")
     }
     
-    var isPlaying: Bool {
+    var lf_isPlaying: Bool {
         guard let player = self.avPlayer else {
             return false
         }
         return player.currentItem != nil && player.rate != 0
     }
     
-    var volume: Float {
+    var lf_volume: Float {
         get {
             guard let player = self.avPlayer else {
                 return 0
@@ -80,8 +84,15 @@ extension LFVideoPlayerable {
         }
     }
     
+    //
+    
+    func lf_loadVideo(URL: String) {
+        self.videoURLString = URL
+        self.lf_loadCurrentVideo()
+    }
+    
     // 装载视频
-    func loadCurrentVideo() -> Void {
+    func lf_loadCurrentVideo() -> Void {
         guard let player = self.avPlayer else {
             return
         }
@@ -91,10 +102,10 @@ extension LFVideoPlayerable {
             guard let strongSelf = self else {
                 return
             }
-            strongSelf.delegate?.videoPlayTimeDidChanged(view: strongSelf, time: player.currentTime() )
+            strongSelf.delegate?.lf_videoPlayTimeDidChanged(view: strongSelf, time: player.currentTime() )
         }
         
-        guard let url: URL = self.videoURL else {
+        guard let url: URL = self.lf_videoURL else {
             print("NO avilable URL.");
             return
         }
@@ -108,7 +119,7 @@ extension LFVideoPlayerable {
                 for key in keys {
                     let assetStatus = videoAssets.statusOfValue(forKey: key, error: &error)
                     guard assetStatus != AVKeyValueStatus.failed else {
-                        self.delegate?.videoPlayerViewFailedToPlay(view: self, error: error)
+                        self.delegate?.lf_videoPlayerViewFailedToPlay(view: self, error: error)
                         return
                     }
                 }
@@ -118,7 +129,7 @@ extension LFVideoPlayerable {
                 layer.frame = self.frame
                 layer.backgroundColor = UIColor.blue.cgColor
                 self.layer.addSublayer(layer)
-                self.delegate?.videoPlayerViewReadyToPlay(view: self)
+                self.delegate?.lf_videoPlayerViewReadyToPlay(view: self)
             }
         }
     }
@@ -187,7 +198,7 @@ extension LFVideoPlayerable {
         self.lf_seekTo(time: CMTimeValue(targetTimeValue))
     }
     
-    func updateVideoOrientation(orientation: UIDeviceOrientation) {
+    func lf_updateVideoOrientation(orientation: UIDeviceOrientation) {
         let layer: AVPlayerLayer = AVPlayerLayer(layer: self.layer);
         layer.videoGravity = orientation.isLandscape ? AVLayerVideoGravity.resize : AVLayerVideoGravity.resizeAspect
     }

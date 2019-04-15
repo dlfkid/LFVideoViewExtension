@@ -32,9 +32,7 @@ class MainViewController: UIViewController {
         view.addSubview(videoView)
         videoView.backgroundColor = .cyan
         videoView.avPlayer = AVPlayer()
-        videoView.videoURLString = kSampleVideoURL
         videoView.delegate = self;
-        videoView.loadCurrentVideo()
         
         playButton.setTitle("Play", for: .normal)
         playButton.setTitle("Pause", for: .selected)
@@ -42,6 +40,7 @@ class MainViewController: UIViewController {
         playButton.backgroundColor = .yellow
         playButton.frame = CGRect(x: 50, y: 210, width: 100, height: 44)
         playButton.addTarget(self, action: #selector(playButtonDidTappedAction), for: .touchUpInside)
+        playButton.isEnabled = false
         view.addSubview(playButton)
         
         stopButton.setTitle("Stop", for: .normal)
@@ -66,7 +65,7 @@ class MainViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        
+        self.videoView.lf_loadVideo(URL: kSampleVideoURL)
     }
     
     @objc func playButtonDidTappedAction() {
@@ -94,16 +93,16 @@ class MainViewController: UIViewController {
 }
 
 extension MainViewController: LFVideoPlayerControllerDelegate {
-    func videoPlayerViewDidPlayToEndTime(view: LFVideoPlayerable) {
+    func lf_videoPlayerViewDidPlayToEndTime(view: LFVideoPlayerable) {
         self.playButton.isSelected = false
     }
     
-    func videoPlayerViewReadyToPlay(view: LFVideoPlayerable) {
-        view.lf_play()
-        view.lf_seekTo(percentage: 0.7)
+    func lf_videoPlayerViewReadyToPlay(view: LFVideoPlayerable) {
+        playButton.isEnabled = true;
+        progressView.maximumValue = videoView.lf_videoDuration
     }
     
-    func videoPlayTimeDidChanged(view: LFVideoPlayerable, time: CMTime) {
-        self.progressView.value = Float(time.value)
+    func lf_videoPlayTimeDidChanged(view: LFVideoPlayerable, time: CMTime) {
+        self.progressView.value = Float(time.seconds)
     }
 }

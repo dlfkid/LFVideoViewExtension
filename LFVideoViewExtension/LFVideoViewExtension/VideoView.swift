@@ -36,7 +36,7 @@ extension VideoView {
     @objc func videoDidFinishedPlayToEnd() {
         self.lf_stop()
         print("Video play finished");
-        self.delegate?.videoPlayerViewDidPlayToEndTime(view: self)
+        self.delegate?.lf_videoPlayerViewDidPlayToEndTime(view: self)
     }
     
     @objc func videoDidFailedPlayToEnd(notify: Notification) {
@@ -44,6 +44,6 @@ extension VideoView {
             return
         }
         print("Video failed to play with error: \(notifyError.localizedDescription)")
-        self.delegate?.videoPlayerViewFailedToPlay(view: self, error: notifyError)
+        self.delegate?.lf_videoPlayerViewFailedToPlay(view: self, error: notifyError)
     }
 }
