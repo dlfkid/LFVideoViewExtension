@@ -23,6 +23,8 @@ class MainViewController: UIViewController {
     
     let progressView = UISlider(frame: .zero)
     
+    var isDragging: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -58,8 +60,9 @@ class MainViewController: UIViewController {
         speakerButton.addTarget(self, action: #selector(speakerButtonDidTappedAction), for: .touchUpInside)
         view.addSubview(speakerButton)
         
-        progressView.frame = CGRect(x: 50, y: 260, width: screenWidth - 100, height: 30)
-        progressView.addTarget(self, action: #selector(progressViewValueChangedAction), for: .valueChanged)
+        progressView.frame = CGRect(x: 50, y: 260, width: screenWidth - 100, height: 10)
+        progressView.isContinuous = false
+        progressView.addTarget(self, action: #selector(progressViewValueChangedAction(event:)), for: .valueChanged)
         progressView.minimumValue = 0
         view.addSubview(progressView)
     }
@@ -87,9 +90,16 @@ class MainViewController: UIViewController {
         self.speakerButton.isSelected = !self.speakerButton.isSelected
     }
     
-    @objc func progressViewValueChangedAction() {
-        
+    @objc func progressViewValueChangedAction(event: UIEvent) {
+        guard (videoView.avPlayer?.currentItem?.asset) != nil else {
+            return
+        }
+//        let time = CMTime(seconds: Double(progressView.value), preferredTimescale: timeScale)
+//        videoView.lf_seekTo(time: time)
+        let percentage = progressView.value / progressView.maximumValue;
+        videoView.lf_seekTo(percentage: percentage)
     }
+    
 }
 
 extension MainViewController: LFVideoPlayerControllerDelegate {
@@ -103,6 +113,8 @@ extension MainViewController: LFVideoPlayerControllerDelegate {
     }
     
     func lf_videoPlayTimeDidChanged(view: LFVideoPlayerable, time: CMTime) {
-        self.progressView.value = Float(time.seconds)
+        if (!progressView.isHighlighted) {
+            progressView.value = Float(time.seconds)
+        }
     }
 }

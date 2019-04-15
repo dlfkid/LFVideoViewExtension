@@ -167,16 +167,24 @@ extension LFVideoPlayerable {
         player.isMuted = !state
     }
     
-    // 调到指定时间
-    func lf_seekTo(time: CMTimeValue) {
+    // 调到指定时间值
+    func lf_seekTo(timeValue: CMTimeValue) {
         guard let player = self.avPlayer else {
             return
         }
         guard let timeScale = player.currentItem?.asset.duration.timescale else {
             return
         }
-        let cmTime: CMTime = CMTime(value: time, timescale: timeScale)
+        let cmTime: CMTime = CMTime(value: timeValue, timescale: timeScale)
         player.seek(to: cmTime)
+    }
+    
+    // 调到指定时间
+    func lf_seekTo(time: CMTime) {
+        guard let player = self.avPlayer else {
+            return
+        }
+        player.seek(to: time)
     }
     
     // 调到指定进度
@@ -195,7 +203,7 @@ extension LFVideoPlayerable {
         
         let totalTimeValue: Int64 = player.currentItem?.asset.duration.value ?? 0
         let targetTimeValue = Float(totalTimeValue) * tempPercent
-        self.lf_seekTo(time: CMTimeValue(targetTimeValue))
+        self.lf_seekTo(timeValue: CMTimeValue(targetTimeValue))
     }
     
     func lf_updateVideoOrientation(orientation: UIDeviceOrientation) {
