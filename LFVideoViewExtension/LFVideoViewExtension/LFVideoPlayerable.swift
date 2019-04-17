@@ -45,7 +45,6 @@ protocol LFVideoPlayerable: UIView {
     
     var avPlayer: AVPlayer? { get set }
     
-    
 }
 
 // 需要实现的播放器方法: 1.播放当前URL 2.暂停 3.停止 4.全屏 5.音量 6.静音 7.设置进度
@@ -84,15 +83,16 @@ extension LFVideoPlayerable {
         }
     }
     
-    //
-    
-    func lf_loadVideo(URL: String) {
-        self.videoURLString = URL
-        self.lf_loadCurrentVideo()
+    func lf_playVideo(videoURLString: String) {
+        self.avPlayer = AVPlayer()
+        let videoURL = URL(string: videoURLString)
+        self.lf_loadVideo(url: videoURL) {
+            self.lf_play()
+        }
     }
     
     // 装载视频
-    func lf_loadCurrentVideo() -> Void {
+    func lf_loadVideo(url: URL?, completion: (_: () -> Void)?) -> Void {
         guard let player = self.avPlayer else {
             return
         }
@@ -105,12 +105,12 @@ extension LFVideoPlayerable {
             strongSelf.delegate?.lf_videoPlayTimeDidChanged(view: strongSelf, time: player.currentTime() )
         }
         
-        guard let url: URL = self.lf_videoURL else {
-            print("NO avilable URL.");
+        guard let videoURL = url else {
+            print("URL is unavailable")
             return
         }
         
-        let videoAssets: AVURLAsset = AVURLAsset(url: url, options: nil)
+        let videoAssets: AVURLAsset = AVURLAsset(url: videoURL, options: nil)
         let keys = ["playable", "duration"]
         videoAssets.loadValuesAsynchronously(forKeys: keys) {
             let mainQueue = DispatchQueue.main
@@ -130,6 +130,10 @@ extension LFVideoPlayerable {
                 layer.backgroundColor = UIColor.blue.cgColor
                 self.layer.addSublayer(layer)
                 self.delegate?.lf_videoPlayerViewReadyToPlay(view: self)
+                guard let handler = completion else {
+                    return
+                }
+                handler()
             }
         }
     }

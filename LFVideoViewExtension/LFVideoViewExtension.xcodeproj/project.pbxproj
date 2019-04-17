@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3515DCBF2267464800A654D3 /* NextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3515DCBE2267464800A654D3 /* NextViewController.swift */; };
+		3515DCC1226746D600A654D3 /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3515DCC0226746D600A654D3 /* Global.swift */; };
 		3568CFB7225DF81500D8B227 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3568CFB6225DF81500D8B227 /* AppDelegate.swift */; };
 		3568CFBE225DF81700D8B227 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3568CFBD225DF81700D8B227 /* Assets.xcassets */; };
 		3568CFC1225DF81700D8B227 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3568CFBF225DF81700D8B227 /* LaunchScreen.storyboard */; };
@@ -16,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3515DCBE2267464800A654D3 /* NextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextViewController.swift; sourceTree = "<group>"; };
+		3515DCC0226746D600A654D3 /* Global.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
 		3568CFB3225DF81500D8B227 /* LFVideoViewExtension.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LFVideoViewExtension.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3568CFB6225DF81500D8B227 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3568CFBD225DF81700D8B227 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -58,8 +62,10 @@
 			children = (
 				3568CFB6225DF81500D8B227 /* AppDelegate.swift */,
 				3568CFC8225E093D00D8B227 /* MainViewController.swift */,
+				3515DCBE2267464800A654D3 /* NextViewController.swift */,
 				3568CFCA225E096F00D8B227 /* LFVideoPlayerable.swift */,
 				3568CFCC225ED1D300D8B227 /* VideoView.swift */,
+				3515DCC0226746D600A654D3 /* Global.swift */,
 				3568CFBD225DF81700D8B227 /* Assets.xcassets */,
 				3568CFBF225DF81700D8B227 /* LaunchScreen.storyboard */,
 				3568CFC2225DF81700D8B227 /* Info.plist */,
@@ -137,7 +143,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3515DCBF2267464800A654D3 /* NextViewController.swift in Sources */,
 				3568CFCD225ED1D300D8B227 /* VideoView.swift in Sources */,
+				3515DCC1226746D600A654D3 /* Global.swift in Sources */,
 				3568CFB7225DF81500D8B227 /* AppDelegate.swift in Sources */,
 				3568CFC9225E093D00D8B227 /* MainViewController.swift in Sources */,
 				3568CFCB225E096F00D8B227 /* LFVideoPlayerable.swift in Sources */,

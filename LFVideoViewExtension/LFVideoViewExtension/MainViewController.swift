@@ -9,8 +9,6 @@
 import UIKit
 import AVFoundation
 
-let kSampleVideoURL: String = "http://www.w3school.com.cn/example/html5/mov_bbb.mp4"
-
 class MainViewController: UIViewController {
 
     let videoView = VideoView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 200))
@@ -30,6 +28,7 @@ class MainViewController: UIViewController {
         
         self.navigationController?.navigationBar.isTranslucent = false
         self.navigationItem.title = "Demo"
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(gotoNextController))
         
         view.addSubview(videoView)
         videoView.backgroundColor = .cyan
@@ -68,7 +67,8 @@ class MainViewController: UIViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        self.videoView.lf_loadVideo(URL: kSampleVideoURL)
+        let videoURL = URL(string: GlobalConstants.kSampleVideoURL)
+        self.videoView.lf_loadVideo(url: videoURL, completion: nil)
     }
     
     @objc func playButtonDidTappedAction() {
@@ -100,6 +100,9 @@ class MainViewController: UIViewController {
         videoView.lf_seekTo(percentage: percentage)
     }
     
+    @objc func gotoNextController() {
+        self.navigationController?.pushViewController(NextViewController(), animated: true)
+    }
 }
 
 extension MainViewController: LFVideoPlayerControllerDelegate {
