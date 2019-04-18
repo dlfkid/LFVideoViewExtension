@@ -20,6 +20,7 @@ class MainViewController: UIViewController {
     let speakerButton = UIButton(type: .custom)
     
     let progressView = UISlider(frame: .zero)
+    let volumeSlider = UISlider(frame: .zero)
     
     var isDragging: Bool = false
     
@@ -64,6 +65,12 @@ class MainViewController: UIViewController {
         progressView.addTarget(self, action: #selector(progressViewValueChangedAction(event:)), for: .valueChanged)
         progressView.minimumValue = 0
         view.addSubview(progressView)
+        
+        volumeSlider.frame = CGRect(x: 50, y: 300, width: screenWidth - 100, height: 10)
+        volumeSlider.maximumValue = 100
+        volumeSlider.minimumValue = 0
+        volumeSlider.addTarget(self, action: #selector(volumeSliderValueChangedAction(event:)), for: .valueChanged)
+        view.addSubview(volumeSlider)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -78,6 +85,7 @@ class MainViewController: UIViewController {
             videoView.lf_play()
         }
         self.playButton.isSelected = !self.playButton.isSelected
+        volumeSlider.value = videoView.lf_volume * 100
     }
     
     @objc func stopButtonDidTappedAction() {
@@ -98,6 +106,10 @@ class MainViewController: UIViewController {
 //        videoView.lf_seekTo(time: time)
         let percentage = progressView.value / progressView.maximumValue;
         videoView.lf_seekTo(percentage: percentage)
+    }
+    
+    @objc func volumeSliderValueChangedAction(event: UIEvent) {
+        videoView.lf_volume = volumeSlider.value * 0.01
     }
     
     @objc func gotoNextController() {
