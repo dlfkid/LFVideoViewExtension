@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-class VideoView: UIView, LFVideoPlayerable {
+class LFVideoView: UIView, LFVideoPlayerable {
     
     var videoURLString: String?
     
@@ -32,7 +32,7 @@ class VideoView: UIView, LFVideoPlayerable {
     }
 }
 
-extension VideoView {
+extension LFVideoView {
     @objc func videoDidFinishedPlayToEnd() {
         self.lf_stop()
         print("Video play finished");

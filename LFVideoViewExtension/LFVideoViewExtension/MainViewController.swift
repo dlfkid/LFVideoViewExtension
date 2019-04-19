@@ -11,7 +11,7 @@ import AVFoundation
 
 class MainViewController: UIViewController {
 
-    let videoView = VideoView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 200))
+    let videoView = LFVideoView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 200))
     
     let screenWidth = UIScreen.main.bounds.size.width
     

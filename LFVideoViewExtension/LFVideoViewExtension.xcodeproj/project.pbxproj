@@ -14,7 +14,7 @@
 		3568CFC1225DF81700D8B227 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3568CFBF225DF81700D8B227 /* LaunchScreen.storyboard */; };
 		3568CFC9225E093D00D8B227 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3568CFC8225E093D00D8B227 /* MainViewController.swift */; };
 		3568CFCB225E096F00D8B227 /* LFVideoPlayerable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3568CFCA225E096F00D8B227 /* LFVideoPlayerable.swift */; };
-		3568CFCD225ED1D300D8B227 /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3568CFCC225ED1D300D8B227 /* VideoView.swift */; };
+		3568CFCD225ED1D300D8B227 /* LFVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3568CFCC225ED1D300D8B227 /* LFVideoView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +27,7 @@
 		3568CFC2225DF81700D8B227 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3568CFC8225E093D00D8B227 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		3568CFCA225E096F00D8B227 /* LFVideoPlayerable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LFVideoPlayerable.swift; sourceTree = "<group>"; };
-		3568CFCC225ED1D300D8B227 /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
+		3568CFCC225ED1D300D8B227 /* LFVideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LFVideoView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,7 +64,7 @@
 				3568CFC8225E093D00D8B227 /* MainViewController.swift */,
 				3515DCBE2267464800A654D3 /* NextViewController.swift */,
 				3568CFCA225E096F00D8B227 /* LFVideoPlayerable.swift */,
-				3568CFCC225ED1D300D8B227 /* VideoView.swift */,
+				3568CFCC225ED1D300D8B227 /* LFVideoView.swift */,
 				3515DCC0226746D600A654D3 /* Global.swift */,
 				3568CFBD225DF81700D8B227 /* Assets.xcassets */,
 				3568CFBF225DF81700D8B227 /* LaunchScreen.storyboard */,
@@ -144,7 +144,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3515DCBF2267464800A654D3 /* NextViewController.swift in Sources */,
-				3568CFCD225ED1D300D8B227 /* VideoView.swift in Sources */,
+				3568CFCD225ED1D300D8B227 /* LFVideoView.swift in Sources */,
 				3515DCC1226746D600A654D3 /* Global.swift in Sources */,
 				3568CFB7225DF81500D8B227 /* AppDelegate.swift in Sources */,
 				3568CFC9225E093D00D8B227 /* MainViewController.swift in Sources */,

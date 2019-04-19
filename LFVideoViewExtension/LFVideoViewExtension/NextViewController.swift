@@ -16,7 +16,7 @@ class NextViewController: UIViewController {
     var testView: LFVideoPlayerable
     
     init() {
-        testView = VideoView(frame: CGRect(x: 0, y: 100, width: screenWidth, height: 200))
+        testView = LFVideoView(frame: CGRect(x: 0, y: 100, width: screenWidth, height: 200))
         super.init(nibName: nil, bundle: nil)
     }
     
