@@ -127,7 +127,6 @@ extension LFVideoPlayerable {
                 player.replaceCurrentItem(with: playerItem)
                 let layer = AVPlayerLayer(player: player)
                 layer.frame = self.frame
-                layer.backgroundColor = UIColor.blue.cgColor
                 self.layer.addSublayer(layer)
                 self.delegate?.lf_videoPlayerViewReadyToPlay(view: self)
                 guard let handler = completion else {
@@ -211,7 +210,14 @@ extension LFVideoPlayerable {
     }
     
     func lf_updateVideoOrientation(orientation: UIDeviceOrientation) {
-        let layer: AVPlayerLayer = AVPlayerLayer(layer: self.layer);
-        layer.videoGravity = orientation.isLandscape ? AVLayerVideoGravity.resize : AVLayerVideoGravity.resizeAspect
+        for layer in self.layer.sublayers! {
+            if layer.isKind(of: AVPlayerLayer.self) {
+                guard let avLayer = layer as? AVPlayerLayer else {
+                    return
+                }
+                avLayer.frame = orientation.isLandscape ? CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.height, height: UIScreen.main.bounds.size.width) : self.layer.frame;
+                avLayer.videoGravity = orientation.isLandscape ? AVLayerVideoGravity.resize : AVLayerVideoGravity.resizeAspect
+            }
+        }
     }
 }

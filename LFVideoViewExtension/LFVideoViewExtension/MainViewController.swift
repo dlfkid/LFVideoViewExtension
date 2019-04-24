@@ -23,6 +23,7 @@ class MainViewController: UIViewController {
     let volumeSlider = UISlider(frame: .zero)
     
     var isDragging: Bool = false
+    var isFullScreen: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,11 +31,7 @@ class MainViewController: UIViewController {
         self.navigationController?.navigationBar.isTranslucent = false
         self.navigationItem.title = "Demo"
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: .plain, target: self, action: #selector(gotoNextController))
-        
-        view.addSubview(videoView)
-        videoView.backgroundColor = .cyan
-        videoView.avPlayer = AVPlayer()
-        videoView.delegate = self;
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "FullScreen", style: .plain, target: self, action: #selector(fullScreenButtonDidTappedAction(sender:)))
         
         playButton.setTitle("Play", for: .normal)
         playButton.setTitle("Pause", for: .selected)
@@ -71,6 +68,10 @@ class MainViewController: UIViewController {
         volumeSlider.minimumValue = 0
         volumeSlider.addTarget(self, action: #selector(volumeSliderValueChangedAction(event:)), for: .valueChanged)
         view.addSubview(volumeSlider)
+        
+        view.addSubview(videoView)
+        videoView.avPlayer = AVPlayer()
+        videoView.delegate = self;
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -114,6 +115,33 @@ class MainViewController: UIViewController {
     
     @objc func gotoNextController() {
         self.navigationController?.pushViewController(NextViewController(), animated: true)
+    }
+    
+    @objc func fullScreenButtonDidTappedAction(sender: UIBarButtonItem) {
+        if !isFullScreen {
+            UIView.animate(withDuration: 0.5, animations: {
+                self.videoView.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi) / 2)
+                self.videoView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: UIScreen.main.bounds.size.height)
+                self.videoView.lf_updateVideoOrientation(orientation: .landscapeLeft)
+            }) { (finished) in
+                if finished {
+                    self.isFullScreen = !self.isFullScreen
+                    self.navigationItem.leftBarButtonItem?.title = self.isFullScreen ? "Resize" : "FullScreen"
+                }
+            }
+        } else {
+            UIView.animate(withDuration: 0.5, animations: {
+                self.videoView.transform = CGAffineTransform(rotationAngle: 0)
+                self.videoView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 200)
+                self.videoView.lf_updateVideoOrientation(orientation: .portrait)
+            }) { (finished) in
+                if (finished) {
+                    self.isFullScreen = !self.isFullScreen
+                    self.navigationItem.leftBarButtonItem?.title = self.isFullScreen ? "Resize" : "FullScreen"
+                }
+            }
+        }
+        
     }
 }
 
